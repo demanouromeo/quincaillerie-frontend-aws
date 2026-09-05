@@ -1,0 +1,112 @@
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Reception</span>
+    <h1>Approvisionnements</h1>
+  </div>
+</div>
+
+<div class="tag-card">
+  <div class="card-head"><h2>Nouvel approvisionnement</h2></div>
+  <div class="card-body">
+    <div class="field-row">
+      <div class="field">
+        <label for="fournisseur">Fournisseur</label>
+        <select id="fournisseur" [ngModel]="fournisseurId()" (ngModelChange)="fournisseurId.set($event)" name="fournisseur">
+          <option [ngValue]="null">Selectionner...</option>
+          @for (fournisseur of fournisseurs(); track fournisseur.id) {
+            <option [ngValue]="fournisseur.id">{{ fournisseur.nom }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="ligne-form">
+      <div class="field">
+        <label for="produit">Produit</label>
+        <select id="produit" [ngModel]="produitId()" (ngModelChange)="produitId.set($event)" name="produit">
+          <option [ngValue]="null">Selectionner...</option>
+          @for (produit of produits(); track produit.id) {
+            <option [ngValue]="produit.id">{{ produit.reference }} — {{ produit.nom }}</option>
+          }
+        </select>
+      </div>
+      <div class="field field-qty">
+        <label for="quantite">Quantite</label>
+        <input id="quantite" type="number" min="1" [ngModel]="quantite()" (ngModelChange)="quantite.set($event)" name="quantite" />
+      </div>
+      <div class="field field-qty">
+        <label for="prix">Prix d'achat unitaire</label>
+        <input id="prix" type="number" min="0" [ngModel]="prixAchatUnitaire()" (ngModelChange)="prixAchatUnitaire.set($event)" name="prix" />
+      </div>
+      <button type="button" class="btn btn-secondary" (click)="ajouterLigne()">Ajouter la ligne</button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th class="num">Quantite</th>
+            <th class="num">Prix unitaire</th>
+            <th class="num">Sous-total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (ligne of lignes(); track ligne.produit.id; let i = $index) {
+            <tr>
+              <td>{{ ligne.produit.nom }}</td>
+              <td class="num">{{ ligne.quantite }}</td>
+              <td class="num">{{ ligne.prixAchatUnitaire }}</td>
+              <td class="num">{{ ligne.quantite * ligne.prixAchatUnitaire }}</td>
+              <td><button type="button" class="btn btn-ghost btn-sm" (click)="retirerLigne(i)">Retirer</button></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="table-empty">Aucune ligne ajoutee.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="appro-footer">
+      <span class="eyebrow">Total</span>
+      <span class="num appro-total">{{ total() }} FCFA</span>
+      <button type="button" class="btn btn-primary" [disabled]="validation()" (click)="valider()">
+        {{ validation() ? 'Enregistrement...' : "Valider l'approvisionnement" }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="tag-card historique-card">
+  <div class="card-head">
+    <h2>Historique</h2>
+    <app-search-input [(value)]="rechercheHistorique" placeholder="Rechercher (fournisseur, gestionnaire, n°)" />
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="num">N°</th>
+          <th>Date</th>
+          <th>Fournisseur</th>
+          <th>Gestionnaire</th>
+          <th class="num">Montant</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (appro of historiqueFiltre(); track appro.id) {
+          <tr>
+            <td class="num">{{ appro.id }}</td>
+            <td>{{ appro.dateAppro | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ appro.fournisseurNom }}</td>
+            <td>{{ appro.gestionnaireLogin }}</td>
+            <td class="num">{{ appro.montantTotal }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="table-empty">Aucun approvisionnement enregistre.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,132 @@
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Catalogue</span>
+    <h1>Produits</h1>
+  </div>
+  <div class="toolbar">
+    <label class="checkbox-field">
+      <input type="checkbox" [ngModel]="alertesSeulement()" (ngModelChange)="basculerAlertes($event)" />
+      Alertes seulement
+    </label>
+    <button type="button" class="btn btn-primary btn-sm" (click)="nouveau()">Nouveau produit</button>
+  </div>
+</div>
+
+<div class="list-detail-grid">
+  <div class="tag-card">
+    <div class="table-toolbar">
+      <app-search-input [(value)]="recherche" placeholder="Rechercher (reference, produit, categorie)" />
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Produit</th>
+            <th>Categorie</th>
+            <th class="num">Prix vente</th>
+            <th class="num">Stock</th>
+            <th>Statut</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (produit of produitsFiltres(); track produit.id) {
+            <tr class="is-selectable" [class.is-selected]="selection()?.id === produit.id" (click)="selectionner(produit)">
+              <td class="mono nowrap">{{ produit.reference }}</td>
+              <td>{{ produit.nom }}</td>
+              <td>{{ produit.categorieNom }}</td>
+              <td class="num">{{ produit.prixVente }}</td>
+              <td class="num">{{ produit.stockActuel }}</td>
+              <td><app-stock-badge [stockActuel]="produit.stockActuel" [seuilAlerte]="produit.seuilAlerte" /></td>
+              <td>
+                @if (estAdmin()) {
+                  <button
+                    type="button"
+                    class="icon-btn icon-btn-danger"
+                    title="Supprimer"
+                    aria-label="Supprimer {{ produit.nom }}"
+                    (click)="supprimer(produit); $event.stopPropagation()"
+                  >
+                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <path d="M4.5 6h11M8.2 6V4.6c0-.6.5-1.1 1.1-1.1h1.4c.6 0 1.1.5 1.1 1.1V6m-6.3 0 .7 9.3c.1.7.6 1.2 1.3 1.2h5.4c.7 0 1.2-.5 1.3-1.2L15.1 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="table-empty">Aucun produit ne correspond a la recherche.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tag-card detail-card">
+    <div class="card-head">
+      <h2>{{ selection() ? 'Modifier' : 'Nouveau' }}</h2>
+      @if (selection()) {
+        <span class="eyebrow">#{{ selection()!.id }}</span>
+      }
+    </div>
+    <form class="card-body" (ngSubmit)="enregistrer()">
+      <div class="field-row">
+        <div class="field">
+          <label for="reference">Reference</label>
+          <input id="reference" type="text" [ngModel]="form().reference" (ngModelChange)="majForm('reference', $event)" name="reference" />
+        </div>
+        <div class="field">
+          <label for="unite">Unite</label>
+          <input id="unite" type="text" [ngModel]="form().unite" (ngModelChange)="majForm('unite', $event)" name="unite" placeholder="sac, unite, m..." />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="nom">Nom</label>
+        <input id="nom" type="text" [ngModel]="form().nom" (ngModelChange)="majForm('nom', $event)" name="nom" />
+      </div>
+
+      <div class="field">
+        <label for="categorie">Categorie</label>
+        <select id="categorie" [ngModel]="form().categorieId" (ngModelChange)="majForm('categorieId', $event)" name="categorie">
+          <option [ngValue]="null">Sans categorie</option>
+          @for (categorie of categories(); track categorie.id) {
+            <option [ngValue]="categorie.id">{{ categorie.nom }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="prixAchat">Prix d'achat</label>
+          <input id="prixAchat" type="number" min="0" [ngModel]="form().prixAchat" (ngModelChange)="majForm('prixAchat', $event)" name="prixAchat" />
+        </div>
+        <div class="field">
+          <label for="prixVente">Prix de vente</label>
+          <input id="prixVente" type="number" min="0" [ngModel]="form().prixVente" (ngModelChange)="majForm('prixVente', $event)" name="prixVente" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="seuilAlerte">Seuil d'alerte</label>
+          <input id="seuilAlerte" type="number" min="0" [ngModel]="form().seuilAlerte" (ngModelChange)="majForm('seuilAlerte', $event)" name="seuilAlerte" />
+        </div>
+        <div class="field">
+          <label for="stockActuel">Stock actuel</label>
+          <input id="stockActuel" type="number" min="0" [ngModel]="form().stockActuel" (ngModelChange)="majForm('stockActuel', $event)" name="stockActuel" />
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        @if (selection()) {
+          <button type="button" class="btn btn-secondary" (click)="nouveau()">Annuler</button>
+        }
+        <button type="submit" class="btn btn-primary" [disabled]="enregistrement()">
+          {{ enregistrement() ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

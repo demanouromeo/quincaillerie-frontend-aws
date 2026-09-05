@@ -1,0 +1,103 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.session-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper-raised);
+  margin-right: 4px;
+}
+
+.session-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--copper);
+}
+
+.session-login {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink);
+}
+
+.session-role {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper-raised);
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--line-soft);
+    border-color: var(--ink-faint);
+    color: var(--ink);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+// Bouton de deconnexion : la fleche s'avance au survol, puis l'icone entiere
+// "sort" du cadre (translation + fondu) au clic avant la navigation reelle
+// vers /login (voir DUREE_ANIMATION_DECONNEXION_MS dans topbar-actions.ts) —
+// remplace l'ancien bouton texte "Deconnexion".
+.logout-btn {
+  overflow: hidden;
+
+  .logout-arrow {
+    transition: transform 0.2s ease;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--orange);
+    color: var(--orange-ink);
+    background: var(--orange-soft);
+
+    .logout-arrow {
+      transform: translateX(2px);
+    }
+  }
+
+  &.is-leaving svg {
+    animation: logout-walk 0.38s ease forwards;
+  }
+}
+
+@keyframes logout-walk {
+  0% { transform: translateX(0); opacity: 1; }
+  60% { transform: translateX(9px); opacity: 1; }
+  100% { transform: translateX(16px); opacity: 0; }
+}

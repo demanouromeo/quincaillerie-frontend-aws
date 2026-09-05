@@ -1,0 +1,109 @@
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Acces</span>
+    <h1>Utilisateurs</h1>
+  </div>
+  <button type="button" class="btn btn-primary btn-sm" (click)="nouveau()">Nouvel utilisateur</button>
+</div>
+
+<div class="list-detail-grid">
+  <div class="tag-card">
+    <div class="table-toolbar">
+      <app-search-input [(value)]="recherche" placeholder="Rechercher (nom, identifiant, email, role)" />
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Identifiant</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Statut</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (utilisateur of utilisateursFiltres(); track utilisateur.id) {
+            <tr class="is-selectable" [class.is-selected]="selection()?.id === utilisateur.id" (click)="selectionner(utilisateur)">
+              <td>{{ utilisateur.nom }}</td>
+              <td class="mono">{{ utilisateur.login }}</td>
+              <td>{{ utilisateur.email }}</td>
+              <td>{{ utilisateur.role }}</td>
+              <td>
+                <span class="status-badge" [class]="utilisateur.actif ? 'status-ok' : 'status-out'">
+                  {{ utilisateur.actif ? 'Actif' : 'Desactive' }}
+                </span>
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="icon-btn icon-btn-danger"
+                  [disabled]="!utilisateur.actif"
+                  title="Desactiver"
+                  aria-label="Desactiver {{ utilisateur.nom }}"
+                  (click)="supprimer(utilisateur); $event.stopPropagation()"
+                >
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M10 4.2v5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <path d="M6.3 6a5.8 5.8 0 1 0 7.4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="table-empty">Aucun utilisateur ne correspond a la recherche.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tag-card detail-card">
+    <div class="card-head">
+      <h2>{{ selection() ? 'Modifier' : 'Nouveau' }}</h2>
+    </div>
+    <form class="card-body" (ngSubmit)="enregistrer()">
+      <div class="field">
+        <label for="nom">Nom</label>
+        <input id="nom" type="text" [ngModel]="form().nom" (ngModelChange)="majForm('nom', $event)" name="nom" />
+      </div>
+      <div class="field">
+        <label for="login">Identifiant</label>
+        <input id="login" type="text" [ngModel]="form().login" (ngModelChange)="majForm('login', $event)" name="login" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" [ngModel]="form().email" (ngModelChange)="majForm('email', $event)" name="email" />
+      </div>
+      <div class="field">
+        <label for="motDePasse">Mot de passe</label>
+        <input id="motDePasse" type="password" [ngModel]="form().motDePasse" (ngModelChange)="majForm('motDePasse', $event)" name="motDePasse" autocomplete="new-password" />
+        @if (selection()) {
+          <span class="field-hint">Laisser vide pour ne pas changer le mot de passe.</span>
+        }
+      </div>
+      <div class="field">
+        <label for="role">Role</label>
+        <select id="role" [ngModel]="form().role" (ngModelChange)="majForm('role', $event)" name="role">
+          @for (role of roles; track role) {
+            <option [ngValue]="role">{{ role }}</option>
+          }
+        </select>
+      </div>
+      <label class="checkbox-field">
+        <input type="checkbox" [ngModel]="form().actif" (ngModelChange)="majForm('actif', $event)" name="actif" />
+        Compte actif
+      </label>
+
+      <div class="detail-actions">
+        @if (selection()) {
+          <button type="button" class="btn btn-secondary" (click)="nouveau()">Annuler</button>
+        }
+        <button type="submit" class="btn btn-primary" [disabled]="enregistrement()">
+          {{ enregistrement() ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

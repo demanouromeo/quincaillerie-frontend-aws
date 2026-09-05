@@ -1,0 +1,13 @@
+<div class="bar-list">
+  @for (row of rows(); track row.label) {
+    <div class="bar-row" [title]="row.label + ' : ' + row.value + ' ' + unite()">
+      <span class="bar-label">{{ row.label }}</span>
+      <span class="bar-track">
+        <span class="bar-fill" [style.width.%]="pourcentage(row.value)"></span>
+      </span>
+      <span class="bar-value num">{{ row.value }}</span>
+    </div>
+  } @empty {
+    <p class="bar-empty">Aucune donnee.</p>
+  }
+</div>

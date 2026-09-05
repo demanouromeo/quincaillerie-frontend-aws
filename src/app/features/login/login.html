@@ -1,0 +1,99 @@
+<div class="login-shell">
+  <aside class="brand-panel">
+    <div class="brand-mark">
+      <img src="logo.svg" alt="" class="brand-logo" />
+      Mvogt
+    </div>
+    <p class="brand-tagline">Quincaillerie — gestion de stock</p>
+
+    <div class="aisle-board" aria-hidden="true">
+      <div class="aisle-board-label">Rayons</div>
+      <ul>
+        <li><span>01</span>Ciment &amp; Beton</li>
+        <li><span>02</span>Fer &amp; Metallerie</li>
+        <li><span>03</span>Bois &amp; Menuiserie</li>
+        <li><span>04</span>Peinture &amp; Enduits</li>
+        <li><span>05</span>Plomberie</li>
+        <li><span>06</span>Electricite</li>
+        <li><span>07</span>Quincaillerie generale</li>
+        <li><span>08</span>Carrelage &amp; Revetement</li>
+        <li><span>09</span>Outillage</li>
+        <li><span>10</span>Toiture &amp; Etancheite</li>
+      </ul>
+    </div>
+
+    <p class="brand-footnote">Poste connecte au serveur local du magasin</p>
+  </aside>
+
+  <main class="login-panel">
+    <div class="login-card tag-card">
+      <div class="login-card-head">
+        <span class="eyebrow">Acces poste</span>
+        <h1>Connexion</h1>
+        <p>Entrez vos identifiants pour ouvrir votre poste de travail.</p>
+      </div>
+
+      <form (ngSubmit)="connecter()">
+        <div class="field">
+          <label for="identifiant">Identifiant</label>
+          <input
+            id="identifiant"
+            type="text"
+            name="identifiant"
+            autocomplete="username"
+            [ngModel]="identifiant()"
+            (ngModelChange)="identifiant.set($event)"
+          />
+        </div>
+        <div class="field">
+          <div class="field-label-row">
+            <label for="motDePasse">Mot de passe</label>
+            <button type="button" class="link-button" (click)="motDePasseOublie()">Mot de passe oublie ?</button>
+          </div>
+          <div class="password-field">
+            <input
+              id="motDePasse"
+              [type]="motDePasseVisible() ? 'text' : 'password'"
+              name="motDePasse"
+              autocomplete="current-password"
+              [ngModel]="motDePasse()"
+              (ngModelChange)="motDePasse.set($event)"
+            />
+            <button
+              type="button"
+              class="password-toggle-button"
+              (click)="basculerVisibiliteMotDePasse()"
+              [attr.aria-label]="motDePasseVisible() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+            >
+              @if (motDePasseVisible()) {
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M2 10s3-5.5 8-5.5 8 5.5 8 5.5-3 5.5-8 5.5-8-5.5-8-5.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                  <circle cx="10" cy="10" r="2.4" stroke="currentColor" stroke-width="1.5" />
+                  <line x1="3" y1="17" x2="17" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              } @else {
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M2 10s3-5.5 8-5.5 8 5.5 8 5.5-3 5.5-8 5.5-8-5.5-8-5.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                  <circle cx="10" cy="10" r="2.4" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
+
+        <label class="checkbox-field remember-field">
+          <input type="checkbox" [ngModel]="seSouvenir()" (ngModelChange)="seSouvenir.set($event)" name="seSouvenir" />
+          Se souvenir de moi
+        </label>
+
+        @if (errorMessage()) {
+          <p class="field-error">{{ errorMessage() }}</p>
+        }
+
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="submitting()">
+          {{ submitting() ? 'Connexion...' : 'Se connecter' }}
+        </button>
+      </form>
+    </div>
+  </main>
+</div>

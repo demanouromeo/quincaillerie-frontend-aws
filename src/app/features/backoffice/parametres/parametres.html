@@ -1,0 +1,89 @@
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Administration</span>
+    <h1>Parametres</h1>
+  </div>
+</div>
+
+<div class="tag-card settings-card">
+  <div class="card-head">
+    <h2>Parametres de base</h2>
+  </div>
+  <form class="card-body" (ngSubmit)="enregistrer()">
+    <p class="field-hint settings-hint">
+      Le nom et le domaine d'activite apparaissent sur l'en-tete des recus de vente imprimes.
+      Laissez un champ vide pour conserver sa valeur actuelle.
+    </p>
+
+    <div class="field">
+      <label for="nom">Nom de la quincaillerie</label>
+      <input
+        id="nom"
+        type="text"
+        name="nom"
+        [ngModel]="form().nom"
+        (ngModelChange)="majForm('nom', $event)"
+        [placeholder]="actuel().nom"
+        [disabled]="chargement()"
+      />
+    </div>
+
+    <div class="field">
+      <label for="domaine">Domaine d'activite</label>
+      <input
+        id="domaine"
+        type="text"
+        name="domaine"
+        [ngModel]="form().domaine"
+        (ngModelChange)="majForm('domaine', $event)"
+        [placeholder]="actuel().domaine"
+        [disabled]="chargement()"
+      />
+    </div>
+
+    <div class="field">
+      <label for="ville">Ville</label>
+      <input
+        id="ville"
+        type="text"
+        name="ville"
+        [ngModel]="form().ville"
+        (ngModelChange)="majForm('ville', $event)"
+        [placeholder]="actuel().ville"
+        [disabled]="chargement()"
+      />
+    </div>
+
+    <div class="field">
+      <label for="telephone">Telephone</label>
+      <input
+        id="telephone"
+        type="text"
+        name="telephone"
+        [ngModel]="form().telephone"
+        (ngModelChange)="majForm('telephone', $event)"
+        [placeholder]="actuel().telephone"
+        [disabled]="chargement()"
+      />
+    </div>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        [ngModel]="form().email"
+        (ngModelChange)="majForm('email', $event)"
+        [placeholder]="actuel().email"
+        [disabled]="chargement()"
+      />
+    </div>
+
+    <div class="detail-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="enregistrement() || chargement()">
+        {{ enregistrement() ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>

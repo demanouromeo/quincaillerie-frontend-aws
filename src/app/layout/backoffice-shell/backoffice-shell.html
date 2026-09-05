@@ -1,0 +1,57 @@
+<div class="shell">
+  <div
+    class="drawer-backdrop"
+    [class.is-open]="drawerOuvert()"
+    (click)="fermerDrawer()"
+  ></div>
+
+  <aside class="sidebar" [class.is-open]="drawerOuvert()">
+    <div class="brand-mark">
+      <img src="logo.svg" alt="" class="brand-logo" />
+      Mvogt
+      <button type="button" class="drawer-close" (click)="fermerDrawer()" aria-label="Fermer le menu">
+        &times;
+      </button>
+    </div>
+
+    <nav class="nav-board">
+      <span class="eyebrow">Gestion</span>
+      <ul>
+        @for (item of navItems(); track item.path) {
+          <li>
+            <a [routerLink]="item.path" routerLinkActive="is-active" (click)="fermerDrawer()">
+              <span class="nav-index">{{ item.index }}</span>
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="sidebar-plate">
+      <span class="sidebar-plate-dot"></span>
+      Poste connecte
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button
+        type="button"
+        class="drawer-toggle"
+        (click)="basculerDrawer()"
+        aria-label="Ouvrir le menu"
+        [attr.aria-expanded]="drawerOuvert()"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <div class="spacer"></div>
+      <app-topbar-actions />
+    </header>
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+
+  <app-scroll-top-button />
+</div>

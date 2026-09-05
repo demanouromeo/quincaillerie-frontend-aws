@@ -1,0 +1,77 @@
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Analyse</span>
+    <h1>Rapports</h1>
+  </div>
+  <button type="button" class="btn btn-secondary btn-sm" [disabled]="chargement()" (click)="charger()">Actualiser</button>
+</div>
+
+<div class="stat-grid">
+  <div class="tag-card stat-tile">
+    <span class="eyebrow">Ventes du jour</span>
+    <div class="stat-value">{{ totaux().jour.total }}</div>
+    <div class="stat-sub">{{ totaux().jour.nb }} vente(s) — FCFA</div>
+  </div>
+  <div class="tag-card stat-tile">
+    <span class="eyebrow">Ventes de la semaine</span>
+    <div class="stat-value">{{ totaux().semaine.total }}</div>
+    <div class="stat-sub">{{ totaux().semaine.nb }} vente(s) — FCFA</div>
+  </div>
+  <div class="tag-card stat-tile">
+    <span class="eyebrow">Ventes du mois</span>
+    <div class="stat-value">{{ totaux().mois.total }}</div>
+    <div class="stat-sub">{{ totaux().mois.nb }} vente(s) — FCFA</div>
+  </div>
+  <div class="tag-card stat-tile">
+    <span class="eyebrow">Produits sous seuil</span>
+    <div class="stat-value">{{ nbAlertes() }}</div>
+    <div class="stat-sub">A reapprovisionner</div>
+  </div>
+</div>
+
+<div class="tag-card tendance-card">
+  <div class="card-head"><h2>Tendance des ventes (14 jours)</h2></div>
+  <div class="card-body">
+    <div class="tendance-chart">
+      @for (jour of tendance(); track jour.label) {
+        <div class="tendance-bar-wrap" [title]="jour.label + ' : ' + jour.total + ' FCFA'">
+          <span class="tendance-bar" [style.height.%]="hauteurBarre(jour.total)"></span>
+          <span class="tendance-label">{{ jour.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+  <div class="tag-card">
+    <div class="card-head"><h2>Top produits vendus</h2></div>
+    <div class="card-body">
+      <app-bar-list [rows]="topProduits()" unite="unites" />
+    </div>
+  </div>
+
+  <div class="tag-card">
+    <div class="card-head"><h2>Detail</h2></div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th class="num">Quantite vendue</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (produit of topProduits(); track produit.label) {
+            <tr>
+              <td>{{ produit.label }}</td>
+              <td class="num">{{ produit.value }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="2" class="table-empty">Aucune vente enregistree.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

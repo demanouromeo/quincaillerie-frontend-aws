@@ -1,0 +1,26 @@
+.ligne-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 16px 0;
+  margin-bottom: 12px;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+  flex-wrap: wrap;
+}
+.ligne-form .field { flex: 1; min-width: 160px; margin-top: 16px; }
+.ligne-form .field-qty { max-width: 140px; flex: none; }
+.ligne-form .btn { margin-top: 16px; }
+
+.appro-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.appro-total { font-size: 18px; margin-right: 8px; }
+
+.historique-card { margin-top: 20px; }

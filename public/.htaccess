@@ -1,0 +1,15 @@
+# Angular (routage cote client, HTML5 pushState) : sans ceci, un rechargement
+# de page sur une route comme /backoffice/produits renvoie une 404 Apache, le
+# serveur cherchant un fichier/dossier reel a ce chemin au lieu de laisser le
+# routeur Angular le gerer cote navigateur. On reecrit donc toute requete qui
+# ne correspond ni a un fichier ni a un dossier existant vers index.html.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  RewriteRule ^ index.html [L]
+</IfModule>

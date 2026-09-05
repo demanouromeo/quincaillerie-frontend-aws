@@ -1,0 +1,95 @@
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Vue d'ensemble</span>
+    <h1>Tableau de bord</h1>
+    <p>
+      @if (derniereMaj()) {
+        Derniere mise a jour : {{ derniereMaj() | date: 'HH:mm:ss' }}
+      }
+    </p>
+  </div>
+  <div class="toolbar">
+    <label class="checkbox-field">
+      <input type="checkbox" [ngModel]="actualisationAuto()" (ngModelChange)="surChangementAuto($event)" />
+      Actualisation auto (30s)
+    </label>
+    <button type="button" class="btn btn-secondary btn-sm" [disabled]="chargement()" (click)="actualiser()">
+      Actualiser
+    </button>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="tag-card stat-tile">
+    <span class="eyebrow">Produits references</span>
+    <div class="stat-value">{{ totalProduits() }}</div>
+  </div>
+  <div class="tag-card stat-tile">
+    <span class="eyebrow">Sous le seuil d'alerte</span>
+    <div class="stat-value">{{ sousSeuil() }}</div>
+    <div class="stat-sub">Ciblez ces references pour l'approvisionnement</div>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+  <div class="tag-card">
+    <div class="card-head"><h2>Repartition du stock</h2></div>
+    <div class="card-body">
+      <div class="status-bar">
+        @for (segment of repartitionStatut(); track segment.label) {
+          <span class="status-segment" [class]="segment.cssClass" [style.width.%]="segment.pct" [title]="segment.label + ' : ' + segment.count"></span>
+        }
+      </div>
+      <ul class="status-legend">
+        @for (segment of repartitionStatut(); track segment.label) {
+          <li>
+            <span class="status-badge" [class]="segment.cssClass">{{ segment.label }}</span>
+            <span class="num">{{ segment.count }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="tag-card">
+    <div class="card-head"><h2>Stock par categorie</h2></div>
+    <div class="card-body">
+      <app-bar-list [rows]="stockParCategorie()" unite="unites" />
+    </div>
+  </div>
+</div>
+
+<div class="tag-card">
+  <div class="card-head">
+    <h2>Etat du stock</h2>
+    <app-search-input [(value)]="rechercheStock" placeholder="Rechercher (reference, produit, categorie)" />
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Produit</th>
+          <th>Categorie</th>
+          <th class="num">Stock</th>
+          <th class="num">Seuil</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (produit of produitsAffiches(); track produit.id) {
+          <tr>
+            <td class="mono nowrap">{{ produit.reference }}</td>
+            <td>{{ produit.nom }}</td>
+            <td>{{ produit.categorieNom }}</td>
+            <td class="num">{{ produit.stockActuel }}</td>
+            <td class="num">{{ produit.seuilAlerte }}</td>
+            <td><app-stock-badge [stockActuel]="produit.stockActuel" [seuilAlerte]="produit.seuilAlerte" /></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="table-empty">Aucun produit ne correspond a la recherche.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

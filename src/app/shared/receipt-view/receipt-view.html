@@ -1,0 +1,49 @@
+<div class="receipt-overlay">
+  <div class="receipt-frame">
+    <div class="receipt-print">
+      <div class="receipt-header">
+        <img class="receipt-logo" src="logo.svg" alt="" />
+        <p class="receipt-store">{{ parametres().nom }}</p>
+        <p class="receipt-slogan">{{ parametres().domaine }}</p>
+        <div class="receipt-contact">
+          <div>{{ parametres().ville }}</div>
+          <div>Tel : {{ parametres().telephone }}</div>
+          <div>{{ parametres().email }}</div>
+        </div>
+      </div>
+      <div class="receipt-rule"></div>
+      <div class="receipt-summary">
+        <div class="receipt-row"><span>Vente</span><span>#{{ vente().id }}</span></div>
+        <div class="receipt-row"><span>Date</span><span>{{ vente().dateVente | date: 'dd/MM/yyyy HH:mm' }}</span></div>
+        <div class="receipt-row"><span>Vendeur</span><span>{{ vente().vendeurLogin }}</span></div>
+        @if (clientNom()) {
+          <div class="receipt-row"><span>Client</span><span>{{ clientNom() }}</span></div>
+        }
+      </div>
+      <div class="receipt-rule"></div>
+
+      @for (ligne of vente().lignes; track ligne.produitId) {
+        <div class="receipt-line">
+          <span class="receipt-line-nom">{{ ligne.produitNom }}</span>
+          <span class="receipt-line-detail">
+            {{ ligne.quantite }} x {{ ligne.prixVenteUnitaire }}
+            <span class="receipt-line-total">{{ ligne.sousTotal }}</span>
+          </span>
+        </div>
+      }
+
+      <div class="receipt-rule"></div>
+      <div class="receipt-total">
+        <span>Total</span>
+        <span>{{ vente().montantTotal }} FCFA</span>
+      </div>
+      <div class="receipt-rule"></div>
+      <p class="receipt-footer">Merci de votre achat.</p>
+    </div>
+
+    <div class="receipt-actions">
+      <button type="button" class="btn btn-secondary" (click)="fermer.emit()">Fermer</button>
+      <button type="button" class="btn btn-primary" (click)="imprimer()">Imprimer le recu</button>
+    </div>
+  </div>
+</div>

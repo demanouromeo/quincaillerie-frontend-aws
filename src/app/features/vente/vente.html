@@ -1,0 +1,127 @@
+<div class="vente-shell">
+  <header class="vente-topbar">
+    <div class="brand-mark">
+      <img src="logo.svg" alt="" class="brand-logo" />
+      Mvogt
+    </div>
+    <div class="spacer"></div>
+    @if (peutRevenirAuBackoffice()) {
+      <a routerLink="/backoffice" class="btn btn-ghost btn-sm">Retour au back-office</a>
+    }
+    <app-topbar-actions />
+  </header>
+
+  <div class="vente-body">
+    <section class="produits-pane">
+      <div class="page-head">
+        <div>
+          <span class="eyebrow">Vente</span>
+          <h1>Point de vente</h1>
+        </div>
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Rechercher par reference ou nom..."
+          [ngModel]="recherche()"
+          (ngModelChange)="recherche.set($event)"
+        />
+      </div>
+
+      <div class="tag-card">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Produit</th>
+                <th class="num">Prix</th>
+                <th class="num">Stock</th>
+                <th>Statut</th>
+                <th class="num">Qte</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (produit of produitsFiltres(); track produit.id) {
+                <tr>
+                  <td class="mono nowrap">{{ produit.reference }}</td>
+                  <td>{{ produit.nom }}</td>
+                  <td class="num">{{ produit.prixVente }}</td>
+                  <td class="num">{{ produit.stockActuel }}</td>
+                  <td><app-stock-badge [stockActuel]="produit.stockActuel" [seuilAlerte]="produit.seuilAlerte" /></td>
+                  <td class="num">
+                    <input
+                      type="number"
+                      min="1"
+                      class="qty-input"
+                      [ngModel]="quantitePour(produit.id)"
+                      (ngModelChange)="changerQuantite(produit.id, $event)"
+                    />
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-secondary btn-sm" [disabled]="produit.stockActuel <= 0" (click)="ajouterAuPanier(produit)">
+                      Ajouter
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="7" class="table-empty">Aucun produit ne correspond a la recherche.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panier-pane">
+      <div class="panier-card tag-card">
+        <div class="card-head">
+          <h2>Panier</h2>
+          <span class="eyebrow">{{ panier().length }} ligne(s)</span>
+        </div>
+
+        <div class="panier-lines">
+          @for (ligne of panier(); track ligne.produit.id) {
+            <div class="panier-line">
+              <div class="panier-line-main">
+                <span class="panier-line-nom">{{ ligne.produit.nom }}</span>
+                <button type="button" class="btn btn-ghost btn-sm" (click)="retirerLigne(ligne.produit.id)" aria-label="Retirer">&times;</button>
+              </div>
+              <div class="panier-line-detail">
+                <span>{{ ligne.quantite }} x {{ ligne.produit.prixVente }}</span>
+                <span class="num">{{ ligne.quantite * ligne.produit.prixVente }}</span>
+              </div>
+            </div>
+          } @empty {
+            <p class="panier-empty">Le panier est vide. Ajoutez des produits depuis la liste.</p>
+          }
+        </div>
+
+        <div class="panier-total">
+          <span>Total</span>
+          <span class="num">{{ total() }} FCFA</span>
+        </div>
+
+        <div class="field client-field">
+          <label for="nomClient">Nom du client (optionnel)</label>
+          <input
+            id="nomClient"
+            type="text"
+            placeholder="Pour la facture..."
+            [ngModel]="nomClient()"
+            (ngModelChange)="nomClient.set($event)"
+            name="nomClient"
+          />
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" [disabled]="validation() || panier().length === 0" (click)="validerVente()">
+          {{ validation() ? 'Enregistrement...' : 'Valider la vente' }}
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+@if (derniereVente()) {
+  <app-receipt-view [vente]="derniereVente()!" [clientNom]="clientRecu()" (fermer)="fermerRecu()" />
+}
